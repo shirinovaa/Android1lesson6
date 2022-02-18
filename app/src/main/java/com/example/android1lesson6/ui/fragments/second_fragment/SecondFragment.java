@@ -41,21 +41,33 @@ public class SecondFragment extends Fragment {
 
     private void setupListener() {
         binding.bynSendMessage.setOnClickListener(new View.OnClickListener() {
+                CountDownTimer timer = new CountDownTimer(6000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        binding.timerTxt.setText(String.format(Locale.getDefault(), "%d ", l / 1000L));
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        String message = binding.etInputText.getText().toString().trim();
+                        model = new Model(message);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("key",model);
+                        FirstFragment firstFragment = new FirstFragment();
+                        firstFragment.setArguments(bundle);
+                        getParentFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container,firstFragment).commit();
+                    }
+                };
+
             @Override
             public void onClick(View view) {
-                String message = binding.etInputText.getText().toString().trim();
-                model = new Model(message);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("key",model);
-                FirstFragment firstFragment = new FirstFragment();
-                firstFragment.setArguments(bundle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container,firstFragment).commit();
+                    timer.start();
             }
         });
     }
 
-    // getSupportFragmentManager
 
     @Override
     public void onDestroyView() {
